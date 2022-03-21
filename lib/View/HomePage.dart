@@ -1,99 +1,77 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:toast/toast.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({Key key}) : super(key: key);
-
-  static const String _title = 'FinEst';
-
+  static const TextStyle optionStyle = TextStyle(
+      fontSize: 40,
+      height: 1.5,
+      fontWeight: FontWeight.bold,
+      color: Colors.blue);
+  static BuildContext toastContext;
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: _title,
-      color: Colors.orange,
-      home: MyStatefulWidget(),
-    );
+    toastContext = context;
+    return Column(
+          children: <Widget>[
+            CarouselSlider(
+              options: CarouselOptions(
+                  height: 220.0,
+                  autoPlay: true,
+                  autoPlayInterval: const Duration(seconds: 6),
+                  viewportFraction: 1,
+                  enlargeCenterPage: true),
+              items: ["a", "b", "ç", "d", "e"].map((i) {
+                return Builder(
+                  builder: (BuildContext context) {
+                    return Container(
+                        alignment: AlignmentDirectional.center,
+                        width: MediaQuery.of(context).size.width,
+                        margin: EdgeInsets.all(10),
+                        decoration: BoxDecoration(color: Colors.amber),
+                        child: Text(
+                          '$i',
+                          style: TextStyle(fontSize: 16.0),
+                        ));
+                  },
+                );
+              }).toList(),
+            ),
+            GestureDetector(
+                onTap: () => showToast("Hisse1", gravity: Toast.BOTTOM),
+                child: Text(
+                  "Hisse1",
+                  style: optionStyle,
+                )),
+            GestureDetector(
+                onTap: () => showToast("Hisse2", gravity: Toast.BOTTOM),
+                child: Text(
+                  "Hisse2",
+                  style: optionStyle,
+                )),
+            GestureDetector(
+                onTap: () => showToast("Hisse3", gravity: Toast.BOTTOM),
+                child: Text(
+                  "Hisse3",
+                  style: optionStyle,
+                )),
+            GestureDetector(
+                onTap: () => showToast("Hisse4", gravity: Toast.BOTTOM),
+                child: Text(
+                  "Hisse4",
+                  style: optionStyle,
+                )),
+            GestureDetector(
+                onTap: () => showToast("Hisse5", gravity: Toast.BOTTOM),
+                child: Text(
+                  "Hisse5",
+                  style: optionStyle,
+                )),
+          ],
+        );
   }
-}
 
-class MyStatefulWidget extends StatefulWidget {
-  const MyStatefulWidget({Key key}) : super(key: key);
-
-  @override
-  State<MyStatefulWidget> createState() => _MyStatefulWidgetState();
-}
-
-class _MyStatefulWidgetState extends State<MyStatefulWidget> {
-  int _selectedIndex = 0;
-
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static List<Widget> _widgetOptions = <Widget>[
-    Container(
-      width: 400,
-      height: 200,
-      margin: EdgeInsets.all(10),
-      child: CarouselSlider(
-        options: CarouselOptions(height: 220.0, viewportFraction: 1, enlargeCenterPage: false ),
-        items: ["x",
-                "x",
-                "x",
-                "x",
-                "x"].map((i) {
-          return Builder(
-            builder: (BuildContext context) {
-              return Container(
-                  alignment: AlignmentDirectional.center,
-                  width: MediaQuery.of(context).size.width,
-                  margin: EdgeInsets.symmetric(horizontal: 5),
-                  decoration: BoxDecoration(color: Colors.amber),
-                  child: Text(
-                    '$i',
-                    style: TextStyle(fontSize: 16.0),
-                  ));
-            },
-          );
-        }).toList(),
-      ),
-    ),
-    Text(
-      '',
-      style: optionStyle,
-    )
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('FinEst'),
-        backgroundColor: Colors.orange,
-      ),
-      body: Container(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Ana Sayfa',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.business),
-            label: 'Hisseler',
-          )
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
-        onTap: _onItemTapped,
-      ),
-    );
+  void showToast(String msg, {int duration, int gravity}) {
+    Toast.show(msg, toastContext, duration: duration, gravity: gravity);
   }
 }
