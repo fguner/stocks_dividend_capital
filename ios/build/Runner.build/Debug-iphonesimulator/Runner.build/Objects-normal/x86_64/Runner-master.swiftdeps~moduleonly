@@ -1,5 +1,5 @@
 version: "Apple Swift version 4.2.1 (swiftlang-1000.11.42 clang-1000.11.45.1)"
 options: "ac26163dd3208b8581633e95f41e1425"
-build_time: [1647710051, 238256000]
+build_time: [1647992055, 784709000]
 inputs:
   "/Users/faruk/Desktop/Workspace/Flutter/stocks_dividend_capital/ios/Runner/AppDelegate.swift": [1614793080, 0]

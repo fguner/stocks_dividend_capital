@@ -25,8 +25,6 @@ Sermaye arttırımları ve temettüler ile hisselerin geçmişten bugüne fiyat 
 - API Request ile hisseler getirilecek.
 - Hisseler getirilirken progressbar eklenecek.
 - Hissenin girilen tarih için fiyatı getirilecek.
-- Carousel ile seçili hisseler bağlanacak(DB'den getirilecek sonradan düzetltmeler için).(EREGL, SASA, TOASO, FROTO, HEKTS)
-- Ortak metotlar için helper sınıfı oluşturulacak.
 - Hisseler ekranı tasarımı tamamlanacak.
 
 
@@ -49,9 +47,12 @@ Sermaye arttırımları ve temettüler ile hisselerin geçmişten bugüne fiyat 
 - View'ler ayırıldı.(C'in-4)
 - MongoDB bağlantısı yapıldı.(C'in-4)
 - Carousel'de gösterilecek mesajlar için db'ye bağlanıldı.(C'in-4)
+- Carousel ile seçili hisseler bağlandı(DB'den getirilecek sonradan düzetltmeler için)(C'in-5)
+- Ortak metotlar için helper sınıfı oluşturulacak.(C'in-5)
+- MongoDB Bağlantı ayarları yapıldı.(C'in-5)
 
 #### Kutuphaneler
-- cupertino_icons: Iconların kulanımı için. [Kutuphane](https://pub.dev/packages/cupertino_icons/install)
+- cupertino_icons: IOS Iconlarının kulanımı için. [Kutuphane](https://pub.dev/packages/cupertino_icons/install)
 - carousel_slider: Kaydırmalı kartlar eklemek için [Kutuphane](https://pub.dev/packages/carousel_slider/install)
 - toast: Bilgilendirme mesajları için [Kutuphane](https://pub.dev/packages/toast/install)
 - mongo_dart: MongoDB bağlantısının kurulması için [Kutuphane](https://pub.dev/packages/mongo_dart/install)
