@@ -36,33 +36,33 @@ class HomePage extends StatelessWidget {
               enlargeCenterPage: true),
         ),
         GestureDetector(
-            onTap: () => showToast("Hisse1", gravity: Toast.BOTTOM),
+            onTap: () => showToast("EREGL", gravity: Toast.BOTTOM),
             child: Text(
-              "Hisse1",
+              "EREGL",
               style: optionStyle,
             )),
         GestureDetector(
-            onTap: () => showToast("Hisse2", gravity: Toast.BOTTOM),
+            onTap: () => showToast("TOASO", gravity: Toast.BOTTOM),
             child: Text(
-              "Hisse2",
+              "TOASO",
               style: optionStyle,
             )),
         GestureDetector(
-            onTap: () => showToast("Hisse3", gravity: Toast.BOTTOM),
+            onTap: () => showToast("ISDMR", gravity: Toast.BOTTOM),
             child: Text(
-              "Hisse3",
+              "ISDMR",
               style: optionStyle,
             )),
         GestureDetector(
-            onTap: () => showToast("Hisse4", gravity: Toast.BOTTOM),
+            onTap: () => showToast("FROTO", gravity: Toast.BOTTOM),
             child: Text(
-              "Hisse4",
+              "FROTO",
               style: optionStyle,
             )),
         GestureDetector(
-            onTap: () => showToast("Hisse5", gravity: Toast.BOTTOM),
+            onTap: () => showToast("AKSA", gravity: Toast.BOTTOM),
             child: Text(
-              "Hisse5",
+              "AKSA",
               style: optionStyle,
             )),
       ],

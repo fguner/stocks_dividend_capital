@@ -3,6 +3,8 @@ import 'package:stocks_dividend_capital/Controller/Helper.dart';
 import 'package:stocks_dividend_capital/Model/MessageType.dart';
 import 'package:stocks_dividend_capital/View/HomePage.dart';
 import 'package:stocks_dividend_capital/Controller/ServerConnection.dart';
+import 'package:stocks_dividend_capital/View/StocksPage.dart';
+import 'package:stocks_dividend_capital/View/TestPage.dart';
 
 class ContainerPage extends StatelessWidget {
   const ContainerPage({Key key}) : super(key: key);
@@ -56,13 +58,21 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>{
         changeScreen();
       });
     }
-    
   }
 
+  _insertStocks(){
+    Helper.hisseler = new List();
+    Helper.hisseler.add("TOASO");
+    Helper.hisseler.add("EREGL");
+    Helper.hisseler.add("FROTO");
+    Helper.hisseler.add("ISMDR");
+  }
+  
   @override
   void initState() {
     changeScreen();
     _getMessages();
+    _insertStocks();
     super.initState();
   }
 
@@ -70,11 +80,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>{
     TextStyle optionStyle = TextStyle(
         fontSize: 35, fontWeight: FontWeight.bold, color: Colors.blue);
    _widgetOptions = <Widget>[
-      isLoaded ? HomePage() : CircularProgressIndicator(strokeWidth: 2,),
-      Text(
-        "Deneme",
-        style: optionStyle,
-      )
+      isLoaded ? HomePage() : Center(child : CircularProgressIndicator(strokeWidth: 2)),
+      StocksPage(),
     ];
   }
 

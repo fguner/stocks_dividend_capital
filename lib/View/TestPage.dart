@@ -1,77 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:toast/toast.dart';
 
-class TestPage extends StatelessWidget {
-  static const TextStyle optionStyle = TextStyle(
-      fontSize: 40,
-      height: 1.5,
-      fontWeight: FontWeight.bold,
-      color: Colors.blue);
-  static BuildContext toastContext;
+class TestPage extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    toastContext = context;
-    return Column(
-          children: <Widget>[
-            CarouselSlider(
-              options: CarouselOptions(
-                  height: 220.0,
-                  autoPlay: true,
-                  autoPlayInterval: const Duration(seconds: 6),
-                  viewportFraction: 1,
-                  enlargeCenterPage: true),
-              items: ["a", "b", "ç", "d", "e"].map((i) {
-                return Builder(
-                  builder: (BuildContext context) {
-                    return Container(
-                        alignment: AlignmentDirectional.center,
-                        width: MediaQuery.of(context).size.width,
-                        margin: EdgeInsets.all(10),
-                        decoration: BoxDecoration(color: Colors.amber),
-                        child: Text(
-                          '$i',
-                          style: TextStyle(fontSize: 16.0),
-                        ));
-                  },
-                );
-              }).toList(),
-            ),
-            GestureDetector(
-                onTap: () => showToast("Hisse1", gravity: Toast.BOTTOM),
-                child: Text(
-                  "Hisse1",
-                  style: optionStyle,
-                )),
-            GestureDetector(
-                onTap: () => showToast("Hisse2", gravity: Toast.BOTTOM),
-                child: Text(
-                  "Hisse2",
-                  style: optionStyle,
-                )),
-            GestureDetector(
-                onTap: () => showToast("Hisse3", gravity: Toast.BOTTOM),
-                child: Text(
-                  "Hisse3",
-                  style: optionStyle,
-                )),
-            GestureDetector(
-                onTap: () => showToast("Hisse4", gravity: Toast.BOTTOM),
-                child: Text(
-                  "Hisse4",
-                  style: optionStyle,
-                )),
-            GestureDetector(
-                onTap: () => showToast("Hisse5", gravity: Toast.BOTTOM),
-                child: Text(
-                  "Hisse5",
-                  style: optionStyle,
-                )),
-          ],
-        );
+  _TestPageState createState() => new _TestPageState();
+}
+
+class _TestPageState extends State<TestPage> {
+  @override
+  void initState() {
+    super.initState();
   }
 
-  void showToast(String msg, {int duration, int gravity}) {
-    Toast.show(msg, toastContext, duration: duration, gravity: gravity);
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('Hisse giriş'),
+      content: SingleChildScrollView(
+          child: ListBody(
+        children: <Widget>[
+          TextFormField(
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(hintText: "Lot Sayısı"),
+          ),
+          TextFormField(
+            // ignore: missing_return
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(hintText: "Maliyetiniz"),
+          ),
+        ],
+      )),
+      actions: <Widget>[
+        TextButton(
+            child: Text('Onayla'), onPressed: () => Toast.show("ISDMR", context)
+            //((Navigator.of(context).pop();
+            ),
+      ],
+    );
   }
 }

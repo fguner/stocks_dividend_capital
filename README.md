@@ -50,12 +50,17 @@ Sermaye arttırımları ve temettüler ile hisselerin geçmişten bugüne fiyat 
 - Carousel ile seçili hisseler bağlandı(DB'den getirilecek sonradan düzetltmeler için)(C'in-5)
 - Ortak metotlar için helper sınıfı oluşturulacak.(C'in-5)
 - MongoDB Bağlantı ayarları yapıldı.(C'in-5)
+- Arama özellikli Dropdown kütüphanesi eklendi.(C'in-6)
+- Ana ekran'daki hisseler düzeltildi.(C'in-6)
+- Hisseler ekranı başlangıç tasarımı yapıldı.(C'in-6)
+- Hisse seçtirme, tarih ve tutar girişi alındı.(C'in-6)
 
 #### Kutuphaneler
 - cupertino_icons: IOS Iconlarının kulanımı için. [Kutuphane](https://pub.dev/packages/cupertino_icons/install)
 - carousel_slider: Kaydırmalı kartlar eklemek için [Kutuphane](https://pub.dev/packages/carousel_slider/install)
 - toast: Bilgilendirme mesajları için [Kutuphane](https://pub.dev/packages/toast/install)
 - mongo_dart: MongoDB bağlantısının kurulması için [Kutuphane](https://pub.dev/packages/mongo_dart/install)
+- dropdown_search: Liste içerisinde aramalı dropdown componeneti için [Kutuphane] (https://pub.dev/packages/dropdown_search/install)
 
 #### Hata yorumlamaları
 Api çağırımlarında gelen cevaplar aşağıdaki gibidir bu kontroller eklenmelidir.
