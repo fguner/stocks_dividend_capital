@@ -54,6 +54,10 @@ Sermaye arttırımları ve temettüler ile hisselerin geçmişten bugüne fiyat 
 - Ana ekran'daki hisseler düzeltildi.(C'in-6)
 - Hisseler ekranı başlangıç tasarımı yapıldı.(C'in-6)
 - Hisse seçtirme, tarih ve tutar girişi alındı.(C'in-6)
+- Hisse seçtirme girişi DB'den getirildi.(C'in-7)
+- Hisse arama özelliği eklendi.(C'in-7)
+- Seçilen Hissenin son 5 yıllık temettü grafiği eklendi.(C'in-7)
+- Seçilen Hissenin geçmiş temettü ve bedelsiz verileri getirildi.(C'in-7)
 
 #### Kutuphaneler
 - cupertino_icons: IOS Iconlarının kulanımı için. [Kutuphane](https://pub.dev/packages/cupertino_icons/install)
@@ -61,6 +65,7 @@ Sermaye arttırımları ve temettüler ile hisselerin geçmişten bugüne fiyat 
 - toast: Bilgilendirme mesajları için [Kutuphane](https://pub.dev/packages/toast/install)
 - mongo_dart: MongoDB bağlantısının kurulması için [Kutuphane](https://pub.dev/packages/mongo_dart/install)
 - dropdown_search: Liste içerisinde aramalı dropdown componeneti için [Kutuphane] (https://pub.dev/packages/dropdown_search/install)
+- fl_chart: Seçilen hissenin geçmiş temettü grafiğini görmek için [Kutuphane] (https://pub.dev/packages/fl_chart/install)
 
 #### Hata yorumlamaları
 Api çağırımlarında gelen cevaplar aşağıdaki gibidir bu kontroller eklenmelidir.

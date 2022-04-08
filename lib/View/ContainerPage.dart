@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stocks_dividend_capital/Controller/Helper.dart';
 import 'package:stocks_dividend_capital/Model/MessageType.dart';
+import 'package:stocks_dividend_capital/Model/StocksType.dart';
 import 'package:stocks_dividend_capital/View/HomePage.dart';
 import 'package:stocks_dividend_capital/Controller/ServerConnection.dart';
 import 'package:stocks_dividend_capital/View/StocksPage.dart';
@@ -29,7 +30,7 @@ class MyStatefulWidget extends StatefulWidget {
   State<MyStatefulWidget> createState() => _MyStatefulWidgetState();
 }
 
-class _MyStatefulWidgetState extends State<MyStatefulWidget>{
+class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   int _selectedIndex = 0;
   bool isLoaded = false;
   static List<MessageType> messages = [];
@@ -60,28 +61,40 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>{
     }
   }
 
-  _insertStocks(){
-    Helper.hisseler = new List();
-    Helper.hisseler.add("TOASO");
-    Helper.hisseler.add("EREGL");
-    Helper.hisseler.add("FROTO");
-    Helper.hisseler.add("ISMDR");
+  _getStocks() async {
+    setState(() {
+      isLoaded = false;
+    });
+
+    if (Helper.stocks == null || Helper.stocks.isEmpty) {
+      ServerConnection.getStocks().then((List<StocksType> result) {
+        setState(() {
+          Helper.stocks = result;
+          Helper.hisseler = Helper.getDropDownSearchHisse(Helper.stocks);
+          changeScreen();
+        });
+      });
+    }
   }
-  
+
+
+
   @override
   void initState() {
     changeScreen();
     _getMessages();
-    _insertStocks();
+    _getStocks();
     super.initState();
   }
 
   void changeScreen() {
     TextStyle optionStyle = TextStyle(
         fontSize: 35, fontWeight: FontWeight.bold, color: Colors.blue);
-   _widgetOptions = <Widget>[
-      isLoaded ? HomePage() : Center(child : CircularProgressIndicator(strokeWidth: 2)),
-      StocksPage(),
+    _widgetOptions = <Widget>[
+      isLoaded
+          ? HomePage()
+          : Center(child: CircularProgressIndicator(strokeWidth: 2)),
+      TestPage(),
     ];
   }
 
@@ -98,9 +111,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>{
         title: const Text('FinEst'),
         backgroundColor: Colors.orange,
       ),
-      body: Container(
-        child: _widgetOptions.elementAt(_selectedIndex)
-      ),
+      body: Container(child: _widgetOptions.elementAt(_selectedIndex)),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
