@@ -22,11 +22,9 @@ Sermaye arttırımları ve temettüler ile hisselerin geçmişten bugüne fiyat 
 - MongoDB
 
 #### To-Do Tasks
-- API Request ile hisseler getirilecek.
-- Hisseler getirilirken progressbar eklenecek.
-- Hissenin girilen tarih için fiyatı getirilecek.
-- Hisseler ekranı tasarımı tamamlanacak.
-
+- Ana ekranda hisseler yazıları kaldırılıp midas benzeri yapı kurulacak.
+- Temettü grafiğinde UI düzenlemeleri yapılacak(tarih, tutar başlıkları)
+- Isloaded true olmadan hisseler ekranına geçiş engellenecek.
 
 #### Gerceklestirilenler
 - Proje Oluşturulması(C'in-1)
@@ -58,14 +56,18 @@ Sermaye arttırımları ve temettüler ile hisselerin geçmişten bugüne fiyat 
 - Hisse arama özelliği eklendi.(C'in-7)
 - Seçilen Hissenin son 5 yıllık temettü grafiği eklendi.(C'in-7)
 - Seçilen Hissenin geçmiş temettü ve bedelsiz verileri getirildi.(C'in-7)
+- Hissenin girilen tarih için fiyatı getirildi.(C'in-8)
+- Hesapla butonu eklenecek ve sonuç gösterildi.(C'in-8)
+- UI Düzenlemeleri yapıldı. (C'in-8)
 
 #### Kutuphaneler
 - cupertino_icons: IOS Iconlarının kulanımı için. [Kutuphane](https://pub.dev/packages/cupertino_icons/install)
 - carousel_slider: Kaydırmalı kartlar eklemek için [Kutuphane](https://pub.dev/packages/carousel_slider/install)
 - toast: Bilgilendirme mesajları için [Kutuphane](https://pub.dev/packages/toast/install)
 - mongo_dart: MongoDB bağlantısının kurulması için [Kutuphane](https://pub.dev/packages/mongo_dart/install)
-- dropdown_search: Liste içerisinde aramalı dropdown componeneti için [Kutuphane] (https://pub.dev/packages/dropdown_search/install)
-- fl_chart: Seçilen hissenin geçmiş temettü grafiğini görmek için [Kutuphane] (https://pub.dev/packages/fl_chart/install)
+- dropdown_search: Liste içerisinde aramalı dropdown componeneti için [Kutuphane](https://pub.dev/packages/dropdown_search/install)
+- fl_chart: Seçilen hissenin geçmiş temettü grafiğini görmek için [Kutuphane](https://pub.dev/packages/fl_chart/install)
+- intl: DateTime format işlemleri için [Kutuphane](https://pub.dev/packages/intl/install)
 
 #### Hata yorumlamaları
 Api çağırımlarında gelen cevaplar aşağıdaki gibidir bu kontroller eklenmelidir.

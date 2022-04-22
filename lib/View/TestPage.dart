@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:stocks_dividend_capital/Controller/Helper.dart';
 import 'package:stocks_dividend_capital/Controller/ServerConnection.dart';
 import 'package:stocks_dividend_capital/Model/DividendAndCapitalType.dart';
+import 'package:stocks_dividend_capital/Model/StocksType.dart';
+import 'package:toast/toast.dart';
+import 'package:intl/intl.dart';
 
 class TestPage extends StatefulWidget {
   @override
@@ -13,6 +16,9 @@ class TestPage extends StatefulWidget {
 class _TestPageState extends State<TestPage> {
   bool isLoaded = false;
   bool showAvg = false;
+  String resultHistorical = "";
+  final yearControl = TextEditingController();
+  final amountControl = TextEditingController();
   String currentHisse;
   List<Color> gradientColors = [
     const Color(0xff23b6e6),
@@ -20,11 +26,19 @@ class _TestPageState extends State<TestPage> {
   ];
   List<FlSpot> data;
 
+  static const TextStyle optionStyle = TextStyle(
+      fontSize: 20,
+      height: 1.5,
+      fontWeight: FontWeight.bold,
+      color: Colors.blue);
+
   @override
   void initState() {
-    data = new List<FlSpot>();
     currentHisse = Helper.currentHisse;
     Helper.hisseler.sort((a, b) => a.compareTo(b));
+    if (currentHisse != "") {
+      _getDividends();
+    }
     super.initState();
   }
 
@@ -48,23 +62,47 @@ class _TestPageState extends State<TestPage> {
                     onChanged: changedDropDownHisse,
                   ),
                   TextFormField(
-                    keyboardType: TextInputType.number,
+                    keyboardType: TextInputType.datetime,
                     maxLength: 4,
+                    controller: yearControl,
                     decoration:
-                        InputDecoration(hintText: "Başlangıç Yılı (YYYY)"),
+                        InputDecoration(hintText: "Başlangıç Tarihi (YYYY)"),
                   ),
                   TextFormField(
                     keyboardType: TextInputType.number,
-                    decoration: InputDecoration(hintText: "Alınan Tutar"),
+                    controller: amountControl,
+                    decoration: InputDecoration(hintText: "Alınan Tutar(TL)"),
                   ),
-                  Padding(padding: EdgeInsets.all(50)),
+                  Container(
+                    margin: EdgeInsets.all(10),
+                    height: 50.0,
+                    child: RaisedButton(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(28.0),
+                          side: BorderSide(
+                              color: Color.fromRGBO(0, 160, 227, 1))),
+                      onPressed: () => _getAmount(),
+                      padding: EdgeInsets.all(10.0),
+                      color: Colors.white,
+                      textColor: Color.fromRGBO(0, 160, 227, 1),
+                      child: Text("Hesapla", style: TextStyle(fontSize: 15)),
+                    ),
+                  ),
+                  Padding(
+                      padding: const EdgeInsets.only(
+                          right: 0, left: 15, top: 20, bottom: 0)),
+                  Text(
+                    resultHistorical,
+                    style: optionStyle,
+                  ),
+                  Padding(padding: EdgeInsets.all(25)),
                   isLoaded && data.length > 0
                       ? SizedBox(
-                          width: 200,
-                          height: 200,
+                          width: 300,
+                          height: 250,
                           child: Padding(
                             padding:
-                                const EdgeInsets.only(right: 25.0, top: 30),
+                                const EdgeInsets.only(right: 25.0, top: 50),
                             child: LineChart(mainData()),
                           ),
                         )
@@ -144,7 +182,7 @@ class _TestPageState extends State<TestPage> {
       minX: data.first.x,
       maxX: data.last.x,
       minY: 0,
-      maxY: (data.last.y)+1,
+      maxY: (data.last.y) + 1,
       lineBarsData: [
         LineChartBarData(
           spots: data,
@@ -168,16 +206,14 @@ class _TestPageState extends State<TestPage> {
           return spotIndexes.map((index) {
             return TouchedSpotIndicatorData(
               FlLine(
-                color: Color.fromARGB(255, 206, 24, 24),
+                color: Colors.white,
               ),
               FlDotData(
                 show: true,
                 getDotPainter: (spot, percent, barData, index) =>
                     FlDotCirclePainter(
                   radius: 4,
-                  color: (data.first.y) < data.last.y
-                      ? Color(0xff8df00c)
-                      : Color(0xfff00c0c),
+                  color: Colors.white,
                   strokeWidth: 2,
                   strokeColor: Colors.grey,
                 ),
@@ -206,23 +242,93 @@ class _TestPageState extends State<TestPage> {
     );
   }
 
+  _getAmount() async {
+    int year = int.tryParse(yearControl.text);
+    int amount = int.tryParse(amountControl.text);
+    int lot;
+
+    if (year == null || amount == null) {
+      Toast.show("Lütfen yıl ve tutar bilgilerini girin", context);
+      return;
+    }
+
+    DateTime date =
+        new DateTime(year, DateTime.now().month, DateTime.now().day);
+    HistoricalData data;
+
+    ServerConnection.getHistoricalData(DateFormat('dd-MM-yyyy').format(date))
+        .then((HistoricalData result) {
+      if (result.Amount == null) {
+        ServerConnection.getHistoricalData(DateFormat('dd-MM-yyyy')
+                .format(date.add(const Duration(days: 1))))
+            .then((HistoricalData result1) {
+          if (result1.Amount == null) {
+            ServerConnection.getHistoricalData(DateFormat('dd-MM-yyyy')
+                    .format(date.add(const Duration(days: 2))))
+                .then((HistoricalData result2) {
+              if (result2.Amount != null) {
+                data = result2;
+                lot = (amount ~/ data.Amount);
+                Toast.show((lot * 85.85).toString(), context);
+                setState(() {
+                  resultHistorical = year.toString() +
+                      " yılında alınan " +
+                      lot.toString() +
+                      " adetin şuanki fiyatı:" +
+                      (lot * 85.85).toString();
+                });
+                return;
+              } else {
+                Toast.show("O Tarihe ait hisse değeri bulunamadı.", context);
+                return;
+              }
+            });
+          } else {
+            data = result1;
+            lot = (amount ~/ data.Amount);
+            Toast.show((lot * 85.85).toString(), context);
+            setState(() {
+              resultHistorical = year.toString() +
+                  " yılında alınan " +
+                  lot.toString() +
+                  " adetin şuanki fiyatı:" +
+                  (lot * 85.85).toString();
+            });
+            return;
+          }
+        });
+      } else {
+        data = result;
+        lot = (amount ~/ data.Amount);
+        Toast.show((lot * 85.85).toString(), context);
+        setState(() {
+          resultHistorical = year.toString() +
+              " yılında alınan " +
+              lot.toString() +
+              " adetin şuanki fiyatı:" +
+              (lot * 85.85).toString();
+        });
+        return;
+      }
+    });
+  }
+
   _getDividends() async {
     data = [];
-    if (Helper.dividends == null || Helper.dividends.isEmpty) {
-      ServerConnection.getDividendData()
-          .then((List<DividendAndCapitalType> result) {
-        setState(() {
-          Helper.dividends = result;
-          for (var item in result) {
-            if (item.Code == currentHisse &&
-                item.Date.year >= DateTime.now().year - 5) {
-              data.add(new FlSpot(
-                  double.parse(item.Date.year.toString()), item.Dividend));
-            }
+    ServerConnection.getDividendData()
+        .then((List<DividendAndCapitalType> result) {
+      setState(() {
+        Helper.dividends = result;
+        for (var item in result) {
+          if (item.Code == currentHisse &&
+              item.Date.year >= DateTime.now().year - 5 &&
+              item.TypeCode == "04") {
+            data.add(new FlSpot(
+                double.parse(item.Date.year.toString()), item.Dividend));
           }
-          isLoaded = true;
-        });
+        }
+        isLoaded = true;
       });
-    }
+    });
   }
 }

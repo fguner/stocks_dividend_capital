@@ -4,7 +4,6 @@ import 'package:stocks_dividend_capital/Model/MessageType.dart';
 import 'package:stocks_dividend_capital/Model/StocksType.dart';
 import 'package:stocks_dividend_capital/View/HomePage.dart';
 import 'package:stocks_dividend_capital/Controller/ServerConnection.dart';
-import 'package:stocks_dividend_capital/View/StocksPage.dart';
 import 'package:stocks_dividend_capital/View/TestPage.dart';
 
 class ContainerPage extends StatelessWidget {
@@ -17,7 +16,7 @@ class ContainerPage extends StatelessWidget {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: _title,
-      color: Colors.orange,
+      color: Color.fromRGBO(0, 160, 227, 1),
       home: MyStatefulWidget(),
     );
   }
@@ -31,10 +30,7 @@ class MyStatefulWidget extends StatefulWidget {
 }
 
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
-  int _selectedIndex = 0;
   bool isLoaded = false;
-  static List<MessageType> messages = [];
-  static String mesaj = "";
   List<Widget> _widgetOptions = [];
 
   _getMessages() async {
@@ -47,15 +43,13 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         setState(() {
           isLoaded = true;
           Helper.messages = result;
-          mesaj = result[0].message;
           changeScreen();
         });
       });
     } else {
       setState(() {
         isLoaded = true;
-        messages = Helper.messages;
-        mesaj = messages[0].message;
+        Helper.messages = Helper.messages;
         changeScreen();
       });
     }
@@ -88,8 +82,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   }
 
   void changeScreen() {
-    TextStyle optionStyle = TextStyle(
-        fontSize: 35, fontWeight: FontWeight.bold, color: Colors.blue);
     _widgetOptions = <Widget>[
       isLoaded
           ? HomePage()
@@ -100,7 +92,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      Helper.selectedIndex = index;
     });
   }
 
@@ -109,9 +101,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('FinEst'),
-        backgroundColor: Colors.orange,
+        backgroundColor: Color.fromRGBO(0, 160, 227, 1),
       ),
-      body: Container(child: _widgetOptions.elementAt(_selectedIndex)),
+      body: Container(child: _widgetOptions.elementAt(Helper.selectedIndex)),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -123,8 +115,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             label: 'Hisseler',
           )
         ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
+        currentIndex: Helper.selectedIndex,
+        selectedItemColor: Color.fromARGB(255, 3, 89, 125),
         onTap: _onItemTapped,
       ),
     );

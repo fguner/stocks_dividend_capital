@@ -9,6 +9,7 @@ class Helper {
   static List<DividendAndCapitalType> dividends;
   static String currentHisse;
   static List<String> hisseler;
+  static int selectedIndex=0;
 
 
   static List<String> getDropDownSearchHisse(var hisse) {

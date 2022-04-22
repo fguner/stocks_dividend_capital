@@ -6,7 +6,7 @@ import 'package:stocks_dividend_capital/Model/StocksType.dart';
 
 class ServerConnection {
   static var db, coll;
-  static String connectionString = "Your connection string";
+  static String connectionString = "mongodb+srv://fguner:fguner123@dividendandcapital.zz0nh.mongodb.net/DividendAndCapital?retryWrites=true&w=majority";
 
   static void start() async {
     print(connectionString);
@@ -100,4 +100,19 @@ class ServerConnection {
     });
     return list;
   }
+
+  static Future<HistoricalData> getHistoricalData(String date) async {
+    HistoricalData data = new HistoricalData();
+    if (db == null) {
+      await start();
+    }
+    await connectDB("HistoricalData");
+    await coll.find({'Code': Helper.currentHisse, 'Date':date}).forEach((v) {
+      print(v);
+      data = HistoricalData.fromJson(v);
+    });
+    return data;
+  }
+
+
 }

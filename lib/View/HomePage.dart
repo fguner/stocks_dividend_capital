@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:stocks_dividend_capital/Controller/Helper.dart';
-import 'package:toast/toast.dart';
+import 'package:stocks_dividend_capital/View/TestPage.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => new _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   static const TextStyle optionStyle = TextStyle(
       fontSize: 40,
       height: 1.5,
       fontWeight: FontWeight.bold,
       color: Colors.blue);
-  static BuildContext toastContext;
 
   @override
   Widget build(BuildContext context) {
-    toastContext = context;
     return Column(
       children: <Widget>[
         CarouselSlider.builder(
@@ -24,9 +27,11 @@ class HomePage extends StatelessWidget {
             alignment: AlignmentDirectional.center,
             width: MediaQuery.of(context).size.width,
             margin: EdgeInsets.all(10),
-            decoration: BoxDecoration(color: Colors.amber),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20.0),
+                color: Color.fromRGBO(0, 160, 227, 1)),
             child: Text(Helper.messages[itemIndex].message,
-                style: TextStyle(fontSize: 16.0)),
+                style: TextStyle(fontSize: 16.0, color: Colors.white)),
           ),
           options: CarouselOptions(
               height: 220.0,
@@ -36,31 +41,31 @@ class HomePage extends StatelessWidget {
               enlargeCenterPage: true),
         ),
         GestureDetector(
-            onTap: () => showToast("EREGL", gravity: Toast.BOTTOM),
+            onTap: () => selectedStock("EREGL"),
             child: Text(
               "EREGL",
               style: optionStyle,
             )),
         GestureDetector(
-            onTap: () => showToast("TOASO", gravity: Toast.BOTTOM),
+            onTap: () => selectedStock("TOASO"),
             child: Text(
               "TOASO",
               style: optionStyle,
             )),
         GestureDetector(
-            onTap: () => showToast("ISDMR", gravity: Toast.BOTTOM),
+            onTap: () => selectedStock("ISDMR"),
             child: Text(
               "ISDMR",
               style: optionStyle,
             )),
         GestureDetector(
-            onTap: () => showToast("FROTO", gravity: Toast.BOTTOM),
+            onTap: () => selectedStock("FROTO"),
             child: Text(
               "FROTO",
               style: optionStyle,
             )),
         GestureDetector(
-            onTap: () => showToast("AKSA", gravity: Toast.BOTTOM),
+            onTap: () => selectedStock("AKSA"),
             child: Text(
               "AKSA",
               style: optionStyle,
@@ -69,7 +74,10 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  void showToast(String msg, {int duration, int gravity}) {
-    Toast.show(msg, toastContext, duration: duration, gravity: gravity);
+  void selectedStock(String message) {
+    setState(() {
+      Helper.currentHisse = message;
+      Helper.selectedIndex = 1;
+    });
   }
 }
