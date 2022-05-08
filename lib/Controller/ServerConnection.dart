@@ -1,12 +1,16 @@
+import 'dart:convert';
+
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:stocks_dividend_capital/Controller/Helper.dart';
 import 'package:stocks_dividend_capital/Model/DividendAndCapitalType.dart';
 import 'package:stocks_dividend_capital/Model/MessageType.dart';
 import 'package:stocks_dividend_capital/Model/StocksType.dart';
+import 'package:http/http.dart' as http;
 
 class ServerConnection {
   static var db, coll;
-  static String connectionString = "mongodb+srv://fguner:fguner123@dividendandcapital.zz0nh.mongodb.net/DividendAndCapital?retryWrites=true&w=majority";
+  static String connectionString =
+      "mongodb+srv://fguner:fguner123@dividendandcapital.zz0nh.mongodb.net/DividendAndCapital";
 
   static void start() async {
     print(connectionString);
@@ -102,17 +106,37 @@ class ServerConnection {
   }
 
   static Future<HistoricalData> getHistoricalData(String date) async {
-    HistoricalData data = new HistoricalData();
+    HistoricalData data;
     if (db == null) {
       await start();
     }
     await connectDB("HistoricalData");
-    await coll.find({'Code': Helper.currentHisse, 'Date':date}).forEach((v) {
-      print(v);
+    var v = await coll
+        .findOne({'Code': Helper.currentHisse, 'Date': BsonRegexp(date)});
+    if (v != null) {
       data = HistoricalData.fromJson(v);
-    });
+    }
+
+    await fetchEndeks();
     return data;
   }
 
+  static Future<double> fetchEndeks() async {
+    final response = await http.get(Uri.parse(
+        'https://www.isyatirim.com.tr/_layouts/15/Isyatirim.Website/Common/Data.aspx/OneEndeks?endeks=' +
+            Helper.currentHisse +
+            '.E.BIST'));
 
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      String text = response.body.substring(1, response.body.length - 1);
+      EndeksType result = EndeksType.fromJson(jsonDecode(text));
+      Helper.last = result.last;
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load endeks');
+    }
+  }
 }

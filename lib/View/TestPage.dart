@@ -14,9 +14,10 @@ class TestPage extends StatefulWidget {
 }
 
 class _TestPageState extends State<TestPage> {
-  bool isLoaded = false;
+  bool isLoaded = false, isClicked = false;
   bool showAvg = false;
-  String resultHistorical = "";
+  String resultHistorical = "", month;
+  int monthIndex = 0;
   final yearControl = TextEditingController();
   final amountControl = TextEditingController();
   String currentHisse;
@@ -27,7 +28,7 @@ class _TestPageState extends State<TestPage> {
   List<FlSpot> data;
 
   static const TextStyle optionStyle = TextStyle(
-      fontSize: 20,
+      fontSize: 14,
       height: 1.5,
       fontWeight: FontWeight.bold,
       color: Colors.blue);
@@ -61,6 +62,16 @@ class _TestPageState extends State<TestPage> {
                     showClearButton: true,
                     onChanged: changedDropDownHisse,
                   ),
+                  Padding(padding: EdgeInsets.only(top: 10)),
+                  DropdownSearch(
+                    showSearchBox: true,
+                    label: month != null && month != 'Ay' ? month : 'Ay',
+                    selectedItem: month,
+                    items: Helper.months,
+                    showClearButton: true,
+                    onChanged: changedDropDownMonth,
+                  ),
+                  Padding(padding: EdgeInsets.only(top: 10)),
                   TextFormField(
                     keyboardType: TextInputType.datetime,
                     maxLength: 4,
@@ -88,23 +99,36 @@ class _TestPageState extends State<TestPage> {
                       child: Text("Hesapla", style: TextStyle(fontSize: 15)),
                     ),
                   ),
-                  Padding(
-                      padding: const EdgeInsets.only(
-                          right: 0, left: 15, top: 20, bottom: 0)),
+                  Padding(padding: const EdgeInsets.only(left: 15, top: 10)),
                   Text(
                     resultHistorical,
                     style: optionStyle,
                   ),
-                  Padding(padding: EdgeInsets.all(25)),
+                  isClicked
+                      ? Center(child: CircularProgressIndicator(strokeWidth: 2))
+                      : Padding(padding: EdgeInsets.all(0)),
                   isLoaded && data.length > 0
-                      ? SizedBox(
-                          width: 300,
-                          height: 250,
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.only(right: 25.0, top: 50),
-                            child: LineChart(mainData()),
-                          ),
+                      ? ListBody(
+                          children: <Widget>[
+                            const Text(
+                              'Temettü Geçmişi',
+                              style: TextStyle(
+                                color: Color.fromARGB(255, 44, 173, 233),
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 2,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            SizedBox(
+                                width: 200,
+                                height: 200,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      right: 25.0, top: 10),
+                                  child: LineChart(mainData()),
+                                )),
+                          ],
                         )
                       : Padding(
                           padding: const EdgeInsets.only(
@@ -120,6 +144,7 @@ class _TestPageState extends State<TestPage> {
     setState(() {
       isLoaded = false;
       Helper.dividends = [];
+      resultHistorical = "";
       currentHisse = selectedHisse != null ? selectedHisse : 'Hisse';
       currentHisse = currentHisse.split("-")[0].trim();
       Helper.currentHisse = currentHisse;
@@ -127,8 +152,16 @@ class _TestPageState extends State<TestPage> {
     });
   }
 
+  void changedDropDownMonth(String month) {
+    setState(() {
+      this.month = month != null ? month : 'Ay';
+      monthIndex = Helper.months.indexWhere((element) => element == month);
+    });
+  }
+
 //Veriler üzerinden grafiği çizmek için oluşturuldu.
   LineChartData mainData() {
+    int amountCompare(u1, u2) => u2['y'] - u1['y'];
     return LineChartData(
       gridData: FlGridData(
         show: false,
@@ -180,9 +213,7 @@ class _TestPageState extends State<TestPage> {
           show: true,
           border: Border.all(color: const Color(0xff37434d), width: 1)),
       minX: data.first.x,
-      maxX: data.last.x,
       minY: 0,
-      maxY: (data.last.y) + 1,
       lineBarsData: [
         LineChartBarData(
           spots: data,
@@ -243,12 +274,23 @@ class _TestPageState extends State<TestPage> {
   }
 
   _getAmount() async {
+    setState(() {
+      FocusManager.instance.primaryFocus?.unfocus();
+      resultHistorical = "";
+      isClicked = true;
+    });
     int year = int.tryParse(yearControl.text);
     int amount = int.tryParse(amountControl.text);
-    int lot;
+    int getLot;
+    double lot, dividend = 0;
+    String ay = (monthIndex + 1).toString();
+    ay = ay.length < 2 ? ay.replaceAll(ay, "0" + ay) : ay;
 
     if (year == null || amount == null) {
       Toast.show("Lütfen yıl ve tutar bilgilerini girin", context);
+      setState(() {
+        isClicked = false;
+      });
       return;
     }
 
@@ -256,59 +298,48 @@ class _TestPageState extends State<TestPage> {
         new DateTime(year, DateTime.now().month, DateTime.now().day);
     HistoricalData data;
 
-    ServerConnection.getHistoricalData(DateFormat('dd-MM-yyyy').format(date))
+    ServerConnection.getHistoricalData(DateFormat(ay + '-yyyy').format(date))
         .then((HistoricalData result) {
-      if (result.Amount == null) {
-        ServerConnection.getHistoricalData(DateFormat('dd-MM-yyyy')
-                .format(date.add(const Duration(days: 1))))
-            .then((HistoricalData result1) {
-          if (result1.Amount == null) {
-            ServerConnection.getHistoricalData(DateFormat('dd-MM-yyyy')
-                    .format(date.add(const Duration(days: 2))))
-                .then((HistoricalData result2) {
-              if (result2.Amount != null) {
-                data = result2;
-                lot = (amount ~/ data.Amount);
-                Toast.show((lot * 85.85).toString(), context);
-                setState(() {
-                  resultHistorical = year.toString() +
-                      " yılında alınan " +
-                      lot.toString() +
-                      " adetin şuanki fiyatı:" +
-                      (lot * 85.85).toString();
-                });
-                return;
-              } else {
-                Toast.show("O Tarihe ait hisse değeri bulunamadı.", context);
-                return;
-              }
-            });
-          } else {
-            data = result1;
-            lot = (amount ~/ data.Amount);
-            Toast.show((lot * 85.85).toString(), context);
-            setState(() {
-              resultHistorical = year.toString() +
-                  " yılında alınan " +
-                  lot.toString() +
-                  " adetin şuanki fiyatı:" +
-                  (lot * 85.85).toString();
-            });
-            return;
-          }
-        });
-      } else {
+      if (result != null) {
         data = result;
-        lot = (amount ~/ data.Amount);
-        Toast.show((lot * 85.85).toString(), context);
+        getLot = (amount ~/ data.Amount);
+        lot = getLot.toDouble();
+
+        for (var item in Helper.dividends) {
+          if (item.Code == currentHisse &&
+              item.Date.difference(date).inDays > 0) {
+            if (item.TypeCode == "02" ||
+                item.TypeCode == "03" ||
+                item.TypeCode == "09") {
+              double rate = item.CapitalIK + item.CapitalTM;
+              lot += (lot * rate) / 100;
+            } else {
+              dividend += (lot * item.Dividend);
+            }
+          }
+        }
+
         setState(() {
-          resultHistorical = year.toString() +
-              " yılında alınan " +
-              lot.toString() +
-              " adetin şuanki fiyatı:" +
-              (lot * 85.85).toString();
+          double current = lot * Helper.last;
+          resultHistorical =month.toString() + " " + year.toString() +"'da;\n"+
+              amount.toString() + " TL ile " + getLot.toString() + " lot alınsaydı;\nŞu anda " +
+              lot.toStringAsFixed(lot.truncateToDouble() == current ? 0 : 2) +
+              " lot karşılığı " + (current).toStringAsFixed(current.truncateToDouble() == current ? 0 : 2) +
+              " TL değerinde hisse olacaktı," +
+              "\nŞimdiye kadar " +
+              dividend.toStringAsFixed(
+                  dividend.truncateToDouble() == current ? 0 : 2) +
+              " TL temettü alınacaktı.\n\n";
+        });
+        setState(() {
+          isClicked = false;
         });
         return;
+      } else {
+        setState(() {
+          isClicked = false;
+        });
+        Toast.show("O tarihe ait veri bulunamadı", context);
       }
     });
   }
@@ -323,8 +354,19 @@ class _TestPageState extends State<TestPage> {
           if (item.Code == currentHisse &&
               item.Date.year >= DateTime.now().year - 5 &&
               item.TypeCode == "04") {
-            data.add(new FlSpot(
-                double.parse(item.Date.year.toString()), item.Dividend));
+            if (data.any((element) => element.x == item.Date.year)) {
+              double year =
+                  data.firstWhere((element) => element.x == item.Date.year).x;
+              double result =
+                  data.firstWhere((element) => element.x == item.Date.year).y;
+              result += item.Dividend;
+              data.removeWhere((element) => element.x == year);
+              data.add(
+                  new FlSpot(double.parse(item.Date.year.toString()), result));
+            } else {
+              data.add(new FlSpot(
+                  double.parse(item.Date.year.toString()), item.Dividend));
+            }
           }
         }
         isLoaded = true;

@@ -1,4 +1,4 @@
-package com.example.stocks_dividend_capital
+package com.altgr.stocks_dividend_capital
 
 import io.flutter.embedding.android.FlutterActivity
 

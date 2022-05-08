@@ -35,3 +35,28 @@ class HistoricalData{
     );
   }
 }
+
+class EndeksType{
+  String c;
+  double last;
+  String description;
+  double dailyVolume;
+  double previousDayClose;
+  double dailyChange;
+  double dailyChangePercentage;
+
+  EndeksType(
+  {this.c, this.last, this.description, this.dailyVolume, this.previousDayClose, this.dailyChange, this.dailyChangePercentage});
+
+  factory EndeksType.fromJson(Map<String, dynamic> parsedJson) {
+    return EndeksType(
+      c: parsedJson['c'],
+      last: double.parse(parsedJson['last'].toString()),
+      description: parsedJson['description'].toString(),
+      dailyVolume: double.parse(parsedJson['dailyVolume'].toString()),
+      previousDayClose: double.parse(parsedJson['previousDayClose'].toString()),
+      dailyChange: double.parse(parsedJson['dailyChange'].toString()),
+      dailyChangePercentage: double.parse(parsedJson['dailyChangePercentage'].toString()),
+    );
+  }
+}

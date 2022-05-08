@@ -38,6 +38,22 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       isLoaded = false;
     });
 
+    Helper.stock = new List<String>();
+    Helper.stock.add("TOASO");
+    Helper.stock.add("EREGL");
+    Helper.stock.add("ALARK");
+    Helper.stock.add("FROTO");
+    Helper.stock.add("ISDMR");
+    Helper.stock.add("HEKTS");
+
+    Helper.stockImage = new List<String>();
+    Helper.stockImage.add("https://www.gcmyatirim.com.tr/wp-content/uploads/borsa/toaso_1624535397.png");
+    Helper.stockImage.add("https://www.gcmyatirim.com.tr/wp-content/uploads/2021/02/26/eregl_1614330642.png");
+    Helper.stockImage.add("https://www.gcmyatirim.com.tr/wp-content/uploads/borsa/alark_1623744328.png");
+    Helper.stockImage.add("https://www.gcmyatirim.com.tr/wp-content/uploads/borsa/froto_1624272498.png");
+    Helper.stockImage.add("https://s3-symbol-logo.tradingview.com/iskenderun-demir-celik--600.png");
+    Helper.stockImage.add("https://s3-symbol-logo.tradingview.com/hektas--600.png");
+
     if (Helper.messages == null || Helper.messages.isEmpty) {
       ServerConnection.getMessages().then((List<MessageType> result) {
         setState(() {
@@ -71,8 +87,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     }
   }
 
-
-
   @override
   void initState() {
     changeScreen();
@@ -86,7 +100,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       isLoaded
           ? HomePage()
           : Center(child: CircularProgressIndicator(strokeWidth: 2)),
-      TestPage(),
+      Helper.hisseler != null
+          ? TestPage()
+          : Center(child: CircularProgressIndicator(strokeWidth: 2)),
     ];
   }
 

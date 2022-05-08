@@ -3,10 +3,10 @@
 <plist version="1.0">
 <dict>
 	<key>application-identifier</key>
-	<string>FAKETEAMID.com.example.stocksDividendCapital</string>
+	<string>FAKETEAMID.com.altgr.stocksDividendCapital</string>
 	<key>keychain-access-groups</key>
 	<array>
-		<string>FAKETEAMID.com.example.stocksDividendCapital</string>
+		<string>FAKETEAMID.com.altgr.stocksDividendCapital</string>
 	</array>
 </dict>
 </plist>
